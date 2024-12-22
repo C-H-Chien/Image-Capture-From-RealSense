@@ -1,14 +1,35 @@
-# Images Acquisition With Intel RealSense
+# Images Acquisition from Intel Realsense
+
+## Introduction
+This repo builds on top of the [original repo](https://github.com/Incalos/Image-Capture-With-RealSense) for acquiring images and related data from an Intel Realsense. Different from the original repo, stereo images are also retrieved and saved as greyscale images by turnning off the emitters. The code has been tested on D455. 
+
+## Unified code for retrieving RGB, Stereo, and Depth images
+Refer to ``unified_Realsense_image_acquisition.py`` to get the data according to the user needs.
+
+## Notes
+### RealSense Interactive Viewer
+Activate realsense viewer by
+```bash
+$ realsense-viewer
+```
+
+### Activate/Deactivate the virtual environment on my Ubuntu
+```bash
+$ source your-venv/bin/activate
+(your-venv)$ deactivate
+```
+
+### Trouble Shooting
+- If the error message ``RuntimeError: Couldn't resolve requests`` on the line of the code ``profile = pipeline.start(config)`` comes out, simply un-plug the Realsense and pulg-in again. Rerun and see if the messgae still exists.
+
+# ------ Start of the Original Repo ------
+## Images Acquisition With Intel RealSense
 
 This project involves using Intel Realsense to capture RGB images, depth images, pseudo colored depth images and depth data saved in .npy format, and can be applied to create custom datasets for algorithms such as object detection, instance segmentation, semantic segmentation and so on.
-
-If you want to make a custom dataset from YOLO, please refer to the link [YOLO-Datasets-And-Training-Methods](https://github.com/Incalos/YOLO-Datasets-And-Training-Methods) for details.
 
 To read RGB images and depth images in a similar way to the **pyrealsnese2** library, this project provides the corresponding interface **Dataloader.py**.
 
 To batch modify the file name of the collected data, you can use **Rename.py**.
-
-## Images Acquisition
 
 ### (1) Operation Steps
 
@@ -89,15 +110,3 @@ The input parameter **path** is the name of the root directory of the dataset ge
 
 The return values include the RGB image, the depth image, and the camera parameters.
 
-## 3. File Name Batch Modification ( Rename.py )
-
-Open the terminal and enter the following command. For the parameters **annotations**, the dataset is required to contain label files, which is visible in the link [YOLO-Datasets-And-Training-Methods](https://github.com/Incalos/YOLO-Datasets-And-Training-Methods).
-
-```shell
-python Rename.py --path 2023_03_28_20_14_30 --firstnum 1 --image_format 0 --annotations False
-```
-
-* **path** : `the root directory of the dataset to be modified`
-* **firstnum** : `modify the first filename to the name you want, all of which are named by numbers`
-* **image_format** : `format of the image in the dataset, 0 means .jpg format, 1 means .png format`
-* **annotations** : `whether to modify the label files`
