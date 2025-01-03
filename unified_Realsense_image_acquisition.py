@@ -15,7 +15,7 @@ def parse_opt():
     parser.add_argument("--data", type=int, default=0, help="0(RGB and depth, both are aligned), 1(RGB+stereo)")
     parser.add_argument("--image_format", type=int, default=0, help="option: 0->jpg 1->png")
     parser.add_argument("--image_width", type=int, default=1280, help="width of the image, recommended 1280 or 640")
-    parser.add_argument("--image_height", type=int, default=720, help="height of the image, recommended 720 or 480")
+    parser.add_argument("--image_height", type=int, default=800, help="height of the image, recommended 720 or 480")
     parser.add_argument("--fps", type=int, default=30, help="frame rate of shooting")
     opt = parser.parse_args()
     return opt
@@ -116,6 +116,7 @@ def stream_RGB_stereo_data(opt, dirname, dir_list):
 
 def create_dirs(opt):
     now = datetime.datetime.now()
+    mkdir_flag = False
     if os.path.exists(os.path.join(opt.path, 'images')):
         dirname = opt.path
         if len(os.listdir(os.path.join(opt.path, 'images'))):
@@ -129,13 +130,14 @@ def create_dirs(opt):
     else:
         n = 0
         dirname = os.path.join(opt.path)
+        mkdir_flag = True
     color_dir = os.path.join(dirname, 'images')
     depth_dir = os.path.join(dirname, 'DepthImages')
     depth_color_dir = os.path.join(dirname, 'DepthColorImages')
     depth_npy_dir = os.path.join(dirname, 'DepthNpy')
     stereo_left_dir = os.path.join(dirname, 'images_left')
     stereo_right_dir = os.path.join(dirname, 'images_right')
-    if not os.path.exists(dirname):
+    if not os.path.exists(dirname) or mkdir_flag:
         os.mkdir(dirname)
         os.mkdir(color_dir)
         os.mkdir(depth_dir)
@@ -144,6 +146,7 @@ def create_dirs(opt):
         os.mkdir(stereo_left_dir)
         os.mkdir(stereo_right_dir)
     
+    print(color_dir)
     return dirname, color_dir, depth_dir, depth_color_dir, depth_npy_dir, stereo_left_dir, stereo_right_dir
     
 def control_data_flow(pipeline, opt, dir_list, key, flag, n, img1, img2, img3, save_depth_npy: False):
@@ -171,9 +174,9 @@ def control_data_flow(pipeline, opt, dir_list, key, flag, n, img1, img2, img3, s
         return False, 0, n
     else:
         if key == ord('s') or key == ord('S'):
-            return False, 1
+            return False, 1, n
         if key == ord('w') or key == ord('W'):
-            return False, 0
+            return False, 0, n
         if flag:
             n = n + 1
             if opt.data == 0:
